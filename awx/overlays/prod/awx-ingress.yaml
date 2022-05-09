@@ -1,0 +1,42 @@
+# apiVersion: awx.ansible.com/v1beta1
+# kind: Ingress
+# metadata:
+#   name: autovm-ns-service
+#   annotations:
+#     kubernetes.io/ingress.class: "nginx"
+# spec:
+#   rules:
+#   - host: awx.example.com
+#     http:
+#       paths:
+#       - path: /
+#         backend:
+#           serviceName: autovm-ns-service
+#           servicePort: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: autovm-ns-ingress-unmanaged
+  namespace: autovm-ns
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: awx.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: autovm-ns-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - awx.example.com
+    secretName: awx-secret-tls

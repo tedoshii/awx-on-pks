@@ -1,0 +1,62 @@
+---
+apiVersion: awx.ansible.com/v1beta1
+kind: AWX
+metadata:
+  name: awx
+spec:
+  # These parameters are designed for use with:
+  # - AWX Operator: 0.20.2
+  #   https://github.com/ansible/awx-operator/blob/0.20.2/README.md
+  # - AWX: 21.0.0
+  #   https://github.com/ansible/awx/blob/21.0.0/INSTALL.md
+
+  admin_user: admin
+  admin_password_secret: awx-admin-password
+
+  ingress_type: ingress
+  ingress_tls_secret: awx-secret-tls
+  hostname: awx.example.com
+
+  postgres_configuration_secret: awx-postgres-configuration
+
+  postgres_storage_class: awx-postgres-volume
+  postgres_storage_requirements:
+    requests:
+      storage: 8Gi
+    limits:
+      storage: 50Gi
+  projects_persistence: true
+  projects_existing_claim: awx-projects-claim
+
+  postgres_resource_requirements:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  web_resource_requirements:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  task_resource_requirements:
+    limits:
+      cpu: 250m
+      memory: 1Gi
+  ee_resource_requirements:
+    limits:
+      cpu: 250m
+      memory: 1Gi
+
+  image: localhost:6000/awx
+  image_version: "21.0.0"
+  image_pull_policy: Always
+  #image_pull_secrets:
+  #  - pull_secret_name
+  ee_images:
+    - name: awx-ee
+      image: localhost:6000/awx-ee
+  postgres_image: localhost:6000/postgres
+  postgres_image_version: "12"
+  redis_image: localhost:6000/redis
+  redis_image_version: latest
+  init_container_image: localhost:6000/centos
+  init_container_image_version: stream8
+  control_plane_ee_image: localhost:6000/awx-ee

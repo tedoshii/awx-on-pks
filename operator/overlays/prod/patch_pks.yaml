@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    control-plane: controller-manager
+  name: awx-operator-controller-manager
+  namespace: autovm-ns
+spec:
+  template:
+    spec:
+      containers:
+        - name: kube-rbac-proxy
+          resources:
+                limits:
+                  cpu: 500m
+                  memory: 64Mi
+        - name: awx-manager
+          resources:
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
